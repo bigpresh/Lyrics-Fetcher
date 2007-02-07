@@ -1,0 +1,10 @@
+Fetcher.pm
+MANIFEST
+CHANGES
+Makefile.PL
+Fetcher/LyricsNet.pm
+Fetcher/AstraWeb.pm
+Fetcher/LyricsTime.pm
+Fetcher/LyricsOnDemand.pm
+t/1.t
+read_lyrics.pl

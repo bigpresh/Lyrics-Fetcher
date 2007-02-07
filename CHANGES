@@ -1,0 +1,24 @@
+Legend:
+
+[*] enchanced
+[+] added
+[-] fixed
+
+01/9/2003 by reflog
+[*] enchamced make script to support dependencies
+
+27/8/2003 by reflog
+[*] test script is renewed
+[-] updated the modules to represent sites' changes
+[+] error reporting machanizm to the modules
+[+] new sample script read_lyrics.pl that shows a working app that fetches lyrics from
+    mp3 file or from a playing Xmms
+[*] updated perldoc
+
+
+28/7/2003 by reflog
+[+] Added AstraWeb and LyricsOnDemand engines
+[+] first test script
+
+26/7/2003 by reflog
+[+] Initial version
