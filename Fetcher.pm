@@ -1,6 +1,12 @@
+package Lyrics::Fetcher;
+
 # Lyrics Fetcher
 #
-# Copyright (C) 2003 Sir Reflog <reflog@mail15.com>
+# Copyright (C) 2007 David Precious <davidp@preshweb.co.uk> (CPAN: BIGPRESH)
+# 
+# Originally authored by and copyright (C) 2003 Sir Reflog <reflog@gmail.com>
+# who kindly passed maintainership on to David Precious in Feb 2007
+#
 # Original idea:
 # Copyright (C) 2003 Zachary P. Landau <kapheine@hypa.net>
 # All rights reserved.
@@ -19,15 +25,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-package Lyrics::Fetcher;
+# $Id$
+
 use vars qw($VERSION $Error);
 
-$VERSION = '0.3.1';
+$VERSION = '0.3.2';
 $Error = 'OK'; #return status string
 
 use strict;
-use Data::Dumper;
-use LWP::Simple qw(&get $ua);
 
 BEGIN {
 @__PACKAGE__::FETCHERS = ();
@@ -73,7 +78,7 @@ sub fetch {
 }
 
 sub html2text{
-    my($str) = @_;
+    my $str = shift;
     
     $str =~ s/\r/\n/g;
     $str =~ s/<br(.*?)>/\n/g;
@@ -104,32 +109,43 @@ Lyrics::Fetcher - Perl extension to manage fetchers of song lyrics.
 
 =head1 DESCRIPTION
 
-This module is a fetcher manager. It searches for modules in the Lyrics::Fetcher::* 
-name space and registers them as available fetchers.
+This module is a fetcher manager. It searches for modules in the 
+Lyrics::Fetcher::*  name space and registers them as available fetchers.
 
-The fetcher modules are called by Lyrics::Fetcher and they return song's lyrics in plain 
-text form.
+The fetcher modules are called by Lyrics::Fetcher and they return song's lyrics 
+in plain text form.
 
-This module calls the respective Fetcher->fetch($$) method and returns the result.
+This module calls the respective Fetcher->fetch($$) method and returns the 
+result.
 
-In case of module error the Fetchers must return undef with the error description in $@.
+In case of module error the Fetchers must return undef with the error 
+description in $@.
 
-In case of problems with lyrics' fetching, the error fill be returned in the $Lyrics::Fetcher::Error string.
-If all goes well, it will have 'OK' in it.
+In case of problems with lyrics' fetching, the error fill be returned in the 
+$Lyrics::Fetcher::Error string.  If all goes well, it will have 'OK' in it.
 
-The fetcher selection is made by the "method" parameter passed to the fetch() of this module.
+The fetcher selection is made by the "method" parameter passed to the fetch() 
+of this module.
 
-The value of the "method" parameter must be a * part of the Lyrics::Fetcher::* fetcher package name. 
+The value of the "method" parameter must be a * part of the Lyrics::Fetcher::* 
+fetcher package name. 
 
 =head1 BUGS
 
-There are no known bugs, if catch one please let me know.
+There are no known bugs, if you catch one please let me know.
 
 =head1 CONTACT AND COPYRIGHT
 
+Copyright 2007 David Precious <davidp@preshweb.co.uk> (CPAN Id: BIGPRESH)
+
+All comments / suggestions / bug reports gratefully received (ideally use the
+RT installation at http://rt.cpan.org/ but mail me direct if you prefer)
+
+Previously:
 Copyright 2003 Sir Reflog <reflog@mail15.com>. 
 Copyright 2003 Zachary P. Landau <kapheine@hypa.net>
-All rights reserved. This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
+All rights reserved. This program is free software; you can redistribute it 
+and/or modify it under the same terms as Perl itself.
 
 =cut
