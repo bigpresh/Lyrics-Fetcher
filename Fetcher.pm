@@ -3,7 +3,7 @@ package Lyrics::Fetcher;
 # Lyrics Fetcher
 #
 # Copyright (C) 2007 David Precious <davidp@preshweb.co.uk> (CPAN: BIGPRESH)
-# 
+#
 # Originally authored by and copyright (C) 2003 Sir Reflog <reflog@gmail.com>
 # who kindly passed maintainership on to David Precious in Feb 2007
 #
@@ -27,59 +27,101 @@ package Lyrics::Fetcher;
 
 # $Id$
 
-use vars qw($VERSION $Error);
+use vars qw($VERSION $Error @FETCHERS);
 
-$VERSION = '0.3.2';
-$Error = 'OK'; #return status string
+$VERSION = '0.4.0';
+$Error   = 'OK';      #return status string
 
 use strict;
 
 BEGIN {
-@__PACKAGE__::FETCHERS = ();
-my $myname = __PACKAGE__;
-my $me = $myname;
-$me =~ s/\:\:/\//g;
-foreach my $d (@INC) {
-   chomp $d;
-   if (-d "$d/$me/") { 
-       local(*F_DIR);
-       opendir(*F_DIR, "$d/$me/");
-       while ( my $b = readdir(*F_DIR)) {
-	       next unless $b =~ /^(.*)\.pm$/; 
-	       push @__PACKAGE__::FETCHERS, $1;
-       }
-   }
-}
+    @FETCHERS = ();
+    my $myname = __PACKAGE__;
+    my $me     = $myname;
+    $me =~ s/\:\:/\//g;
+    foreach my $d (@INC) {
+        chomp $d;
+        if ( -d "$d/$me/" ) {
+            local (*F_DIR);
+            opendir( *F_DIR, "$d/$me/" );
+            while ( my $b = readdir(*F_DIR) ) {
+                next unless $b =~ /^(.*)\.pm$/;
+                push @FETCHERS, $1;
+            }
+        }
+    }
 
 }
 
 sub available_fetchers {
-  return wantarray ? @__PACKAGE__::FETCHERS : \@__PACKAGE__::FETCHERS;
+    return wantarray ? @FETCHERS : \@FETCHERS;
 }
 
 sub fetch {
-   my ($self, $artist, $title, $method)  = @_;
+    my ( $self, $artist, $title, $method ) = @_;
 
-   unless ( grep /^$method$/, @__PACKAGE__::FETCHERS ) {
-	$@ = "Need a valid method to use (".join(',',@__PACKAGE__::FETCHERS).")";
-	return undef;
-   }
+    my @tryfetchers;
+    if ( $method && $method ne 'auto' ) {
+        push @tryfetchers, $method;
+    }
+    else {
+        push @tryfetchers, @FETCHERS;
+    }
 
-   my $fetcher = __PACKAGE__."::$method";
-   eval "require $fetcher";
-   if ($@) { 
-	return undef;
-   }
-   $Error = 'OK'; # reinit the error
-   my($f) = $fetcher->fetch($artist, $title);
-   
-   return html2text($f);
+    return _fetch( $artist, $title, \@tryfetchers );
 
-}
+}    # end of sub fetch
 
-sub html2text{
-    my $str = shift;
+
+# actual implementation method - takes params $artist, $title, and an
+# arrayref of fetchers to try.  Returns the result from the first fetcher
+# that succeeded, or undef if all fail.
+sub _fetch {
+
+    my ( $artist, $title, $fetchers ) = @_;
+
+    if ( !$artist || !$title || ref $artist || ref $title ) {
+        warn "_fetch called incorrectly";
+        return;
+    }
+
+    if ( !$fetchers || ref $fetchers ne 'ARRAY' ) {
+        warn "_fetch not given arrayref of fetchers to try";
+        return;
+    }
+
+  fetcher:
+    for my $fetcher (@$fetchers) {
+        
+        warn "Trying fetcher $fetcher";
     
+        my $fetcherpkg = __PACKAGE__ . "::$fetcher";
+        eval "require $fetcherpkg";
+        if ($@) {
+            warn "Failed to require $fetcherpkg";
+            next fetcher;
+        }
+
+        # OK, we require()d this fetcher, try using it:
+        $Error = 'OK';
+        my $f = $fetcher->fetch( $artist, $title );
+        if ( $Error eq 'OK' ) {
+            return html2text($f);
+        }
+        else {
+            next fetcher;
+        }
+    }
+
+    # if we get here, we tried all fetchers we were asked to try, and none
+    # of them worked.
+    $Error = 'All fetchers failed to fetch lyrics';
+    return undef;
+}    # end of sub _fetch
+
+sub html2text {
+    my $str = shift;
+
     $str =~ s/\r/\n/g;
     $str =~ s/<br(.*?)>/\n/g;
     $str =~ s/&gt;/>/g;
@@ -88,11 +130,8 @@ sub html2text{
     $str =~ s/&quot;/\"/g;
     $str =~ s/<.*?>//g;
     $str =~ s/\n\n/\n/g;
-    return $str
+    return $str;
 }
-				    
-				    
-				    
 
 1;
 
