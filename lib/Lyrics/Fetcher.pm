@@ -27,7 +27,7 @@ package Lyrics::Fetcher;
 
 # $Id$
 
-use vars qw($VERSION $Error @FETCHERS);
+use vars qw($VERSION $Error @FETCHERS $Fetcher);
 
 $VERSION = '0.4.0';
 $Error   = 'OK';      #return status string
@@ -58,14 +58,27 @@ sub available_fetchers {
 }
 
 sub fetch {
-    my ( $self, $artist, $title, $method ) = @_;
+    my ( $self, $artist, $title, $fetcherspec ) = @_;
 
     my @tryfetchers;
-    if ( $method && !ref $method && $method ne 'auto') {
-        push @tryfetchers, $method;
-    } elsif (ref $method eq 'ARRAY') {
+    if ( $fetcherspec && !ref $fetcherspec && $fetcherspec ne 'auto') {
+        # we've been given a specific fetcher to use:
+        if (grep /$fetcherspec/, @FETCHERS) {
+            push @tryfetchers, $fetcherspec;
+        } else { 
+            warn "$fetcherspec isn't a valid fetcher";
+            $Error = "Fetcher $fetcherspec isn't installed or is invalid";
+            return;
+        }
+    } elsif (ref $fetcherspec eq 'ARRAY') {
         # we've got an arrayref of fetchers to use:
-        push @tryfetchers, @$method;
+        for my $fetcher (@$fetcherspec) {
+            if (grep /$fetcher/, @FETCHERS) {
+                push @tryfetchers, $fetcher;
+            } else {
+                warn "$fetcher isn't a valid fetcher, ignoring";
+            }
+        }
     } else {
         # OK, try all available fetchers.
         push @tryfetchers, @FETCHERS;
@@ -95,13 +108,11 @@ sub _fetch {
 
   fetcher:
     for my $fetcher (@$fetchers) {
-        
-        warn "Trying fetcher $fetcher";
     
         my $fetcherpkg = __PACKAGE__ . "::$fetcher";
         eval "require $fetcherpkg";
         if ($@) {
-            warn "Failed to require $fetcherpkg";
+            warn "Failed to require $fetcherpkg ($@)";
             next fetcher;
         }
         
@@ -109,6 +120,7 @@ sub _fetch {
         $Error = 'OK';
         my $f = $fetcherpkg->fetch( $artist, $title );
         if ( $Error eq 'OK' ) {
+            $Fetcher = $fetcher;
             return html2text($f);
         }
         else {

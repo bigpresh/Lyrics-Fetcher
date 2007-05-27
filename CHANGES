@@ -8,17 +8,23 @@ Legend:
 [+] added
 [-] fixed
 
-v0.4.0, 25/05/2007 by David Precious
+v0.4.0, 27/05/2007 by David Precious
 [+] If no specific fetcher is given to fetch(), it tries all available fetchers
-    until one succeeds.  You can also give it a list or arrayref and it'll
-    do the Right Thing (i.e. try each named fetcher in turn).
+    until one succeeds.  You can also give it an arrayref of fetchers to try
+    (i.e. try each named fetcher in turn until one returns lyrics).
     
 [-] AstraWeb fetcher now works again (will probably seperate fetchers from the
     base package in the next release, so fetchers can be updated without 
     updating the core Lyrics::Fetcher, and so you can pick and choose which
     fetchers you'd like to install.   Perhaps I can do a funky Makefile which
     (for interactive installs at least) asks you which fetchers you'd like, and
-    adds them.
+    adds them.)
+    
+[-] Withdrew LyricsNet.pm from the package, as it doesn't seem to work any more,
+    the www.lyrics.net.ua search page we used to use seems to just redirect to
+    their homepage.  When it works again I'll update the module to make it work
+    and release Lyrics::Fetcher::LyricsNet seperately.
+    
     
 v0.3.2, 25/02/2007 by David Precious
 [-] Taken over maintainership, with kind permission of previous author

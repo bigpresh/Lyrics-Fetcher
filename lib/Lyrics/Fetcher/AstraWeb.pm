@@ -29,7 +29,7 @@ use WWW::Mechanize;
 use URI::URL;
 use vars qw($VERSION);
 
-$VERSION = '0.1';
+$VERSION = '0.2';
 
 sub fetch($$$){
     my($self,$artist, $title) = @_;
