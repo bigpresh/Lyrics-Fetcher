@@ -4,9 +4,9 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     NAME              => 'Lyrics::Fetcher',
-    VERSION_FROM      => 'Fetcher.pm', # finds $VERSION
+    VERSION_FROM      => 'lib/Lyrics/Fetcher.pm', # finds $VERSION
     PREREQ_PM         => {  }, 
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'Fetcher.pm', # retrieve abstract from module
+      (ABSTRACT_FROM  => 'lib/Lyrics/Fetcher.pm', # retrieve abstract from module
        AUTHOR         => 'David Precious <davidp@preshweb.co.uk>') : ()),
 );
