@@ -8,7 +8,18 @@ Legend:
 [+] added
 [-] fixed
 
-
+v0.4.0, 25/05/2007 by David Precious
+[+] If no specific fetcher is given to fetch(), it tries all available fetchers
+    until one succeeds.  You can also give it a list or arrayref and it'll
+    do the Right Thing (i.e. try each named fetcher in turn).
+    
+[-] AstraWeb fetcher now works again (will probably seperate fetchers from the
+    base package in the next release, so fetchers can be updated without 
+    updating the core Lyrics::Fetcher, and so you can pick and choose which
+    fetchers you'd like to install.   Perhaps I can do a funky Makefile which
+    (for interactive installs at least) asks you which fetchers you'd like, and
+    adds them.
+    
 v0.3.2, 25/02/2007 by David Precious
 [-] Taken over maintainership, with kind permission of previous author
 [-] Fix build scripts to avoid the test failures that have been occurring

@@ -4,6 +4,9 @@
 # Copyright (C) 2003 Sir Reflog <reflog@mail15.com>
 # All rights reserved.
 #
+# Maintainership of Lyrics::Fetcher transferred in Feb 07 to BIGPRESH
+# (David Precious <davidp@preshweb.co.uk>
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -24,6 +27,9 @@ package Lyrics::Fetcher::AstraWeb;
 use strict;
 use WWW::Mechanize;
 use URI::URL;
+use vars qw($VERSION);
+
+$VERSION = '0.1';
 
 sub fetch($$$){
     my($self,$artist, $title) = @_;
@@ -31,11 +37,11 @@ sub fetch($$$){
     my($sartist) = join ("+", split(/ /, $artist));
     my($stitle) = join ("+", split(/ /, $title));
     $agent->get("http://search.lyrics.astraweb.com/?word=$sartist+$stitle");
-    $agent->form(1) if $agent->forms and scalar @{$agent->forms};
+    #$agent->form(1) if $agent->forms and scalar @{$agent->forms};
     if(grep { $_->text() =~ /$title/ }@{$agent->links}) {
-	$agent->follow(qr((?-xism:$title)));
+        $agent->follow_link(text_regex => qr((?-xism:$title)));
         if(grep { $_->text() =~ /Printable/ }@{$agent->links}) {
-		    $agent->follow(qr((?-xism:Printable)));
+		    $agent->follow_link(text_regex => qr((?-xism:Printable)));
 	}else{
 	    $Lyrics::Fetcher::Error = 'Bad page format';
 	    return;
@@ -45,7 +51,7 @@ sub fetch($$$){
     $Lyrics::Fetcher::Error = 'Cannot find such title';
     return;
     }
-    return $agent->content =~  /<blockquote>(.*)<\/blockquote>/;
+    return $agent->content =~  /<blockquote>(.*)<\/blockquote>/ && $1;
 }
 
 1;

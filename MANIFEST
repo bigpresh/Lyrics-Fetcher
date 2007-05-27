@@ -1,8 +1,8 @@
-Fetcher.pm
 MANIFEST
 CHANGES
 Makefile.PL
-Fetcher/LyricsNet.pm
-Fetcher/AstraWeb.pm
+lib/Lyrics/Fetcher.pm
+lib/Lyrics/Fetcher/LyricsNet.pm
+lib/Lyrics/Fetcher/AstraWeb.pm
 t/1.t
 read_lyrics.pl

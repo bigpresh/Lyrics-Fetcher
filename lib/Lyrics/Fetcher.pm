@@ -61,10 +61,13 @@ sub fetch {
     my ( $self, $artist, $title, $method ) = @_;
 
     my @tryfetchers;
-    if ( $method && $method ne 'auto' ) {
+    if ( $method && !ref $method && $method ne 'auto') {
         push @tryfetchers, $method;
-    }
-    else {
+    } elsif (ref $method eq 'ARRAY') {
+        # we've got an arrayref of fetchers to use:
+        push @tryfetchers, @$method;
+    } else {
+        # OK, try all available fetchers.
         push @tryfetchers, @FETCHERS;
     }
 
@@ -101,10 +104,10 @@ sub _fetch {
             warn "Failed to require $fetcherpkg";
             next fetcher;
         }
-
+        
         # OK, we require()d this fetcher, try using it:
         $Error = 'OK';
-        my $f = $fetcher->fetch( $artist, $title );
+        my $f = $fetcherpkg->fetch( $artist, $title );
         if ( $Error eq 'OK' ) {
             return html2text($f);
         }
@@ -142,8 +145,15 @@ Lyrics::Fetcher - Perl extension to manage fetchers of song lyrics.
 =head1 SYNOPSIS
 
       use Lyrics::Fetcher;
-
-      print Lyrics::Fetcher->fetch("Pink Floyd","Echoes","LyricsTime");
+    
+      # using a specific fetcher:
+      print Lyrics::Fetcher->fetch('Pink Floyd','Echoes','LyricWiki');
+      
+      # if you omit the fetcher, automatically tries all available fetchers:
+      print Lyrics::Fetcher->fetch('Oasis', 'Cast No Shadow');
+      
+      # or you can pass an arrayref of fetchers you want used:
+      print Lyrics::Fetcher->fetch('Oasis', 'Whatever', [qw(LyricWiki Google)]);
 
 
 =head1 DESCRIPTION
@@ -164,10 +174,22 @@ In case of problems with lyrics' fetching, the error fill be returned in the
 $Lyrics::Fetcher::Error string.  If all goes well, it will have 'OK' in it.
 
 The fetcher selection is made by the "method" parameter passed to the fetch() 
-of this module.
+of this module.  You can also omit this parameter, in which case all available
+fetchers will be tried, or you can supply an arrayref of fetchers you'd like
+to try (in order of preference).
 
 The value of the "method" parameter must be a * part of the Lyrics::Fetcher::* 
 fetcher package name. 
+
+
+=head1 ADDING FETCHERS
+
+If there's a lyrics site you'd like to see supported, raise a request as a
+wishlist item on http://rt.cpan.org/NoAuth/Bugs.html?Dist=Lyrics-Fetcher or
+mail me direct: davidp@preshweb.co.uk and, if I have time, I'll whip up a
+fetcher.  Or, feel free to code it up yourself and send it to me (or upload
+it to CPAN yourself) if you want to be really helpful ;)
+
 
 =head1 BUGS
 
