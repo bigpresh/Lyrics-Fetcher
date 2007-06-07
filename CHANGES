@@ -8,6 +8,15 @@ Legend:
 [+] added
 [-] fixed
 
+v0.4.1, 07/06/2007 by David Precious
+[-] Annoyingly I'd required Perl 5.8.7 - there's no reason for this module
+    to need anything later than 5.8.0, and it should probably work on some
+    older versions too.  This release should make this module easily accessible
+    to more people (and to ActiveState Perl users), sometime soon I'll get a
+    testing box with older Perls and test on that (anyone care to help? :))
+    Also, moved Lyrics::Fetcher::AstraWeb to its own package, so that this
+    fetcher manager is independent from the various fetchers.
+
 v0.4.0, 27/05/2007 by David Precious
 [+] If no specific fetcher is given to fetch(), it tries all available fetchers
     until one succeeds.  You can also give it an arrayref of fetchers to try

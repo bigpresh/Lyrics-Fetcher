@@ -29,7 +29,7 @@ package Lyrics::Fetcher;
 
 use vars qw($VERSION $Error @FETCHERS $Fetcher $debug);
 
-$VERSION = '0.4.0';
+$VERSION = '0.4.1';
 $Error   = 'OK';      #return status string
 
 $debug = 0; # If you want debug messages, set debug to a true value, and

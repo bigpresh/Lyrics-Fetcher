@@ -1,6 +1,6 @@
 use Test::More 'no_plan';
 
-# TODO: REALLY need to flesh out this test script a lot.
+# TODO: REALLY need to write some proper tests.
 #
 # The tests which were here fail because some of the Fetchers no longer work
 # (unsurprisingly, they're ~ 4 years old, the sites they scrape data from have
@@ -14,6 +14,12 @@ use Test::More 'no_plan';
 # Therefore, to make this package pass tests for easy installation via CPAN
 # (and to avoid all the fail results from cpan-testers) I've temporarily cut
 # the test suite right back, ready to expand it in a future release.
+#
+# Since this test script wants to test just Lyrics::Fetcher rather than the
+# fetchers, I can do some reliable test suites by writing a dummy fetcher
+# (say, Lyrics::Fetcher::Dummy) which just returns fixed results for different
+# song names, then the test suite will test solely Lyrics::Fetcher, and
+# be reliable.
 
 use_ok('Lyrics::Fetcher');
 
