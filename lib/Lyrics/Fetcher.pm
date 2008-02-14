@@ -1,5 +1,9 @@
 package Lyrics::Fetcher;
 
+use strict;
+use warnings;
+use Lyrics::Fetcher::Cache;
+
 # Lyrics Fetcher
 #
 # Copyright (C) 2007 David Precious <davidp@preshweb.co.uk> (CPAN: BIGPRESH)
@@ -62,6 +66,15 @@ sub available_fetchers {
 
 sub fetch {
     my ( $self, $artist, $title, $fetcherspec ) = @_;
+    
+    # first, see if we've got it cached:
+    if (defined($cached = Lyrics::Fetcher::Cache::get($artist, $title)) {
+        # found in the cache; it could either be the lyrics, or 0 (meaning
+        # we didn't find the lyrics last time, but we cached that fact so
+        # that we don't try again.  If it's 0, return undef rather than the
+        # 0.
+        return $cached ? $cached : undef;
+    }
 
     my @tryfetchers;
     if ( $fetcherspec && !ref $fetcherspec && $fetcherspec ne 'auto') {
@@ -129,7 +142,9 @@ sub _fetch {
         if ( $Error eq 'OK' ) {
             $Fetcher = $fetcher;
             debug("Fetcher $fetcher returned lyrics");
-            return html2text($f);
+            my $lyrics = html2text($f);
+            Lyrics::Fetcher::Cache::set($artist, $title, $lyrics);
+            return $lyrics;
         }
         else {
             next fetcher;
@@ -139,6 +154,11 @@ sub _fetch {
     # if we get here, we tried all fetchers we were asked to try, and none
     # of them worked.
     $Error = 'All fetchers failed to fetch lyrics';
+    
+    # if we're caled again for the same artist and title, there's no point
+    # trying all the fetchers again, so cache the failure:
+    Lyrics::Fetcher::Cache::set($artist, $title, 0);
+    
     return undef;
 }    # end of sub _fetch
 
