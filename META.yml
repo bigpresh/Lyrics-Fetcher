@@ -1,7 +1,7 @@
- --- #YAML:1.0
+--- #YAML:1.0
  name: Lyrics-Fetcher
  abstract: Perl extension to fetch song lyrics
- version: 0.42
+ version: 0.5.0
  author:
    - David Precious <davidp@preshweb.co.uk>
  license: perl
@@ -10,8 +10,10 @@
    LWP::UserAgent: 0
    perl: 5.005
  build_requires:
-   Test: 0
+   Test::More: 0
+ recommends:
+ urls:
+   license: http://dev.perl.org/licenses/
  meta-spec:
    version: 1.3
    url: http://module-build.sourceforge.net/META-spec-v1.3.html
- generated_by: hand

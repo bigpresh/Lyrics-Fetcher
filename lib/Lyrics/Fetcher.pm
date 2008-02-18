@@ -6,7 +6,7 @@ use Lyrics::Fetcher::Cache;
 
 # Lyrics Fetcher
 #
-# Copyright (C) 2007 David Precious <davidp@preshweb.co.uk> (CPAN: BIGPRESH)
+# Copyright (C) 2007-08 David Precious <davidp@preshweb.co.uk> (CPAN: BIGPRESH)
 #
 # Originally authored by and copyright (C) 2003 Sir Reflog <reflog@gmail.com>
 # who kindly passed maintainership on to David Precious in Feb 2007
@@ -33,7 +33,7 @@ use Lyrics::Fetcher::Cache;
 
 use vars qw($VERSION $Error @FETCHERS $Fetcher $debug);
 
-$VERSION = '0.4.1';
+$VERSION = '0.5.0';
 $Error   = 'OK';      #return status string
 
 $debug = 0; # If you want debug messages, set debug to a true value, and
@@ -244,9 +244,10 @@ it to CPAN yourself) if you want to be really helpful ;)
 
 There are no known bugs, if you catch one please let me know.
 
+
 =head1 CONTACT AND COPYRIGHT
 
-Copyright 2007 David Precious <davidp@preshweb.co.uk> (CPAN Id: BIGPRESH)
+Copyright 2007-2008 David Precious <davidp@preshweb.co.uk> (CPAN Id: BIGPRESH)
 
 All comments / suggestions / bug reports gratefully received (ideally use the
 RT installation at http://rt.cpan.org/ but mail me direct if you prefer)
@@ -254,6 +255,9 @@ RT installation at http://rt.cpan.org/ but mail me direct if you prefer)
 Previously:
 Copyright 2003 Sir Reflog <reflog@mail15.com>. 
 Copyright 2003 Zachary P. Landau <kapheine@hypa.net>
+
+
+=head1 LICENSE
 
 All rights reserved. This program is free software; you can redistribute it 
 and/or modify it under the same terms as Perl itself.
