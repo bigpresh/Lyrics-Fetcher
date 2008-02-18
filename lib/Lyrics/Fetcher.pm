@@ -57,18 +57,83 @@ BEGIN {
             }
         }
     }
-
 }
+
+
+=head1 NAME
+
+Lyrics::Fetcher - Perl extension to manage fetchers of song lyrics.
+
+=head1 SYNOPSIS
+
+      use Lyrics::Fetcher;
+    
+      # using a specific fetcher:
+      print Lyrics::Fetcher->fetch('Pink Floyd','Echoes','LyricWiki');
+      
+      # if you omit the fetcher, automatically tries all available fetchers:
+      print Lyrics::Fetcher->fetch('Oasis', 'Cast No Shadow');
+      
+      # or you can pass an arrayref of fetchers you want used:
+      print Lyrics::Fetcher->fetch('Oasis', 'Whatever', [qw(LyricWiki Google)]);
+
+
+=head1 DESCRIPTION
+
+This module is a fetcher manager. It searches for modules in the 
+Lyrics::Fetcher::*  name space and registers them as available fetchers.
+
+The fetcher modules are called by Lyrics::Fetcher and they return song's lyrics 
+in plain text form.
+
+This module calls the respective Fetcher->fetch($$) method and returns the 
+result.
+
+In case of module error the Fetchers must return undef with the error 
+description in $@.
+
+In case of problems with lyrics' fetching, the error fill be returned in the 
+$Lyrics::Fetcher::Error string.  If all goes well, it will have 'OK' in it.
+
+The fetcher selection is made by the "method" parameter passed to the fetch() 
+of this module.  You can also omit this parameter, in which case all available
+fetchers will be tried, or you can supply an arrayref of fetchers you'd like
+to try (in order of preference).
+
+The value of the "method" parameter must be a * part of the Lyrics::Fetcher::* 
+fetcher package name. 
+
+=head1 INTERFACE
+
+=over 4
+
+=item available_fetchers
+
+Returns a list of available fetcher modules.
+
+=cut
 
 sub available_fetchers {
     return wantarray ? @FETCHERS : \@FETCHERS;
 }
 
+
+=item fetch($artist, $title [, $fetcher])
+
+Attempt to fetch the lyrics for the given artist and title.
+
+If you want to control which fetcher(s) will be used, you can supply a scalar
+containing the name of the fetcher you want to use, or an arrayref of fetchers
+you want to try (in the order you want them tried).  By default, each fetcher
+module which is installed will be tried.
+
+=cut
+
 sub fetch {
     my ( $self, $artist, $title, $fetcherspec ) = @_;
     
     # first, see if we've got it cached:
-    if (defined($cached = Lyrics::Fetcher::Cache::get($artist, $title)) {
+    if (defined(my $cached = Lyrics::Fetcher::Cache::get($artist, $title)) {
         # found in the cache; it could either be the lyrics, or 0 (meaning
         # we didn't find the lyrics last time, but we cached that fact so
         # that we don't try again.  If it's 0, return undef rather than the
@@ -126,7 +191,7 @@ sub _fetch {
     fetcher:
     for my $fetcher (@$fetchers) {
     
-        debug("Trying fetcher $fetcher for artist:$artist title:$title");
+        _debug("Trying fetcher $fetcher for artist:$artist title:$title");
     
         my $fetcherpkg = __PACKAGE__ . "::$fetcher";
         eval "require $fetcherpkg";
@@ -137,12 +202,12 @@ sub _fetch {
         
         # OK, we require()d this fetcher, try using it:
         $Error = 'OK';
-        debug("Fetcher $fetcher loaded OK, calling ->fetch()");
+        _debug("Fetcher $fetcher loaded OK, calling ->fetch()");
         my $f = $fetcherpkg->fetch( $artist, $title );
         if ( $Error eq 'OK' ) {
             $Fetcher = $fetcher;
-            debug("Fetcher $fetcher returned lyrics");
-            my $lyrics = html2text($f);
+            _debug("Fetcher $fetcher returned lyrics");
+            my $lyrics = _html2text($f);
             Lyrics::Fetcher::Cache::set($artist, $title, $lyrics);
             return $lyrics;
         }
@@ -162,7 +227,8 @@ sub _fetch {
     return undef;
 }    # end of sub _fetch
 
-sub html2text {
+# nasty way to strip out HTML
+sub _html2text {
     my $str = shift;
 
     $str =~ s/\r/\n/g;
@@ -177,7 +243,7 @@ sub html2text {
 }
 
 
-sub debug {
+sub _debug {
 
     my $msg = shift;
     
@@ -187,49 +253,7 @@ sub debug {
 
 1;
 
-=head1 NAME
-
-Lyrics::Fetcher - Perl extension to manage fetchers of song lyrics.
-
-=head1 SYNOPSIS
-
-      use Lyrics::Fetcher;
-    
-      # using a specific fetcher:
-      print Lyrics::Fetcher->fetch('Pink Floyd','Echoes','LyricWiki');
-      
-      # if you omit the fetcher, automatically tries all available fetchers:
-      print Lyrics::Fetcher->fetch('Oasis', 'Cast No Shadow');
-      
-      # or you can pass an arrayref of fetchers you want used:
-      print Lyrics::Fetcher->fetch('Oasis', 'Whatever', [qw(LyricWiki Google)]);
-
-
-=head1 DESCRIPTION
-
-This module is a fetcher manager. It searches for modules in the 
-Lyrics::Fetcher::*  name space and registers them as available fetchers.
-
-The fetcher modules are called by Lyrics::Fetcher and they return song's lyrics 
-in plain text form.
-
-This module calls the respective Fetcher->fetch($$) method and returns the 
-result.
-
-In case of module error the Fetchers must return undef with the error 
-description in $@.
-
-In case of problems with lyrics' fetching, the error fill be returned in the 
-$Lyrics::Fetcher::Error string.  If all goes well, it will have 'OK' in it.
-
-The fetcher selection is made by the "method" parameter passed to the fetch() 
-of this module.  You can also omit this parameter, in which case all available
-fetchers will be tried, or you can supply an arrayref of fetchers you'd like
-to try (in order of preference).
-
-The value of the "method" parameter must be a * part of the Lyrics::Fetcher::* 
-fetcher package name. 
-
+=back
 
 =head1 ADDING FETCHERS
 
