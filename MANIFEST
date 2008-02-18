@@ -5,5 +5,7 @@ Makefile.PL
 META.yml
 lib/Lyrics/Fetcher.pm
 t/1-basic.t
-read_lyrics.pl
-example.pl
+t/2-pod.t
+t/3-pod-coverage.t
+eg/read_lyrics.pl
+eg/example.pl
