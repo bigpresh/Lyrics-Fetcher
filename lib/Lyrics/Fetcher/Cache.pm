@@ -9,7 +9,7 @@ $VERSION = '0.0.1';
 
 
 my $cache;
-my $cache_size = 10000;  # maximum cache size, in bytes
+my $cache_size = 1048576;  # maximum cache size, in bytes
 
 
 # creating an instance of the different caching modules varies slightly,
