@@ -133,7 +133,7 @@ sub fetch {
     my ( $self, $artist, $title, $fetcherspec ) = @_;
     
     # first, see if we've got it cached:
-    if (defined(my $cached = Lyrics::Fetcher::Cache::get($artist, $title)) {
+    if (defined(my $cached = Lyrics::Fetcher::Cache::get($artist, $title))) {
         # found in the cache; it could either be the lyrics, or 0 (meaning
         # we didn't find the lyrics last time, but we cached that fact so
         # that we don't try again.  If it's 0, return undef rather than the
