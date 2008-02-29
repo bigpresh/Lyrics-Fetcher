@@ -8,6 +8,15 @@ Legend:
 [+] added
 [-] fixed
 
+
+v0.5.1, 29/02/2008 by David Precious
+[-] Avoid calling Lyrics::Fetcher::Cache as a fetcher module (doh)
+[*] Add fetch() method to L::F::Cache in case it is called mistakenly,
+    as a simple alias to L::F::Cache::get().
+
+v0.5.0, 19/02/2008 by David Precious
+[+] Added caching of already-fetched lyrics
+
 v0.4.1, 07/06/2007 by David Precious
 [-] Annoyingly I'd required Perl 5.8.7 - there's no reason for this module
     to need anything later than 5.8.0, and it should probably work on some

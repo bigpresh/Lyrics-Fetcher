@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.0.1';
+$VERSION = '0.0.2';
 
 
 my $cache;
@@ -52,6 +52,13 @@ sub set {
 }
 
 
+# this is simply in case something calls us as a fetcher module by mistake
+# (as L::F v0.5.0 did)
+sub fetch {
+    return __PACKAGE__::get(@_);
+}
+
+
 =head1 NAME
 
 Lyrics::Fetcher::Cache - implement caching of lyrics
@@ -69,17 +76,18 @@ Lyrics::Fetcher.  See L<Lyrics::Fetcher> for usage details.
 
 =over 4
 
-=item get
+=item I<get>($artist, $title)
 
 Attempt to fetch from whatever cache module we managed to use
 
-=cut
-
-=item set
+=item I<set>($artist, $title, $lyrics)
 
 Attempt to store the value into the cache
 
-=cut
+=item I<fetch>($artist, $title)
+
+Alias for get, primarily in case this module gets mistaken for a normal
+fetcher module.  Don't call this, call get().
 
 =back
 

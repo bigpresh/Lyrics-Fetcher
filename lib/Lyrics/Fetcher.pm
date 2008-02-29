@@ -33,7 +33,7 @@ use Lyrics::Fetcher::Cache;
 
 use vars qw($VERSION $Error @FETCHERS $Fetcher $debug);
 
-$VERSION = '0.5.0';
+$VERSION = '0.5.1';
 $Error   = 'OK';      #return status string
 
 $debug = 0; # If you want debug messages, set debug to a true value, and
@@ -52,8 +52,10 @@ BEGIN {
             local (*F_DIR);
             opendir( *F_DIR, "$d/$me/" );
             while ( my $b = readdir(*F_DIR) ) {
-                next unless $b =~ /^(.*)\.pm$/;
-                push @FETCHERS, $1;
+		if (my($fetcher) = $b =~ /^(.*)\.pm$/) {
+		    next if $fetcher eq 'Cache';
+		    push @FETCHERS, $fetcher;
+		}
             }
         }
     }
