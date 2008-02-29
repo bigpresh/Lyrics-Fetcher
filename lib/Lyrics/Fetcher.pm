@@ -204,7 +204,13 @@ sub _fetch {
         
         # OK, we require()d this fetcher, try using it:
         $Error = 'OK';
-        _debug("Fetcher $fetcher loaded OK, calling ->fetch()");
+        _debug("Fetcher $fetcher loaded OK");
+	if (!$fetcherpkg->can('fetch')) {
+	    _debug("Fetcher $fetcher can't ->fetch()");
+	    next fetcher;
+	}
+	
+	_debug("Trying to fetch with $fetcher");
         my $f = $fetcherpkg->fetch( $artist, $title );
         if ( $Error eq 'OK' ) {
             $Fetcher = $fetcher;
