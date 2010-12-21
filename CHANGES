@@ -1,6 +1,6 @@
 
 Changelog for Lyrics::Fetcher
-$Id$
+
 
 Legend:
 
@@ -8,6 +8,9 @@ Legend:
 [+] added
 [-] fixed
 
+v0.5.2, 21/12/2010 by David Precious
+[-] Clarify documentation a little, in particular for available_fetchers.
+    This module needs some love.  (As do some of the fetcher modules!)
 
 v0.5.1, 29/02/2008 by David Precious
 [-] Avoid calling Lyrics::Fetcher::Cache as a fetcher module (doh)
